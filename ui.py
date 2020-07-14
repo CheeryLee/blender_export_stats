@@ -29,8 +29,11 @@ class ES_PT_StatsPanel(Panel):
 
     def draw(self, context):
         layout = self.layout
+        props = bpy.context.scene.export_scene_stats
 
         layout.label(text = "Export stats:")
+        layout.prop(props, "scene_data")
+        layout.prop(props, "objects_data")
         layout.operator(ES_ExportToTextblock.bl_idname, icon = "EXPORT")
 
 def register():

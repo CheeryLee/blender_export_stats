@@ -20,23 +20,55 @@
 import bpy
 from .format import *
 
+class ExportProps(bpy.types.PropertyGroup):
+    scene_data: bpy.props.BoolProperty(
+        name = "Scene data",
+        description = "Export scene data",
+        default = True
+    )
+
+    objects_data: bpy.props.BoolProperty(
+        name = "Objects data",
+        description = "Export objects data",
+        default = True
+    )
+
 class ES_ExportToTextblock(bpy.types.Operator):
     bl_label = "Export Scene Stats"
     bl_description = "Exports all scene stats to a new text block"
     bl_idname = "es.export_to_textblock"
     
     def execute(self, context):
-        text_block = bpy.data.texts.new('Scene stats')
-        text_block.write(FormatData.get_data())
-        self.report({ 'INFO' }, 'Scene stats has been exported to a new text block')
+        props = bpy.context.scene.export_scene_stats
 
-        return {'FINISHED'}
+        if not props.scene_data and not props.objects_data:
+            self.report({ 'INFO' }, 'Nothing to export')
+            return {'CANCELLED'}
+        else:
+            text_block = bpy.data.texts.new('Scene stats')
+            text = ""
+
+            if props.scene_data:
+                text += FormatData.get_scene_data()
+            if props.objects_data:
+                text += FormatData.get_objects_data()
+
+            text_block.write(text)
+            self.report({ 'INFO' }, 'Scene stats has been exported to a new text block')
+
+            return {'FINISHED'}
 
     def invoke(self, context, event):
         return self.execute(context)
 
 def register():
+    bpy.utils.register_class(ExportProps)
     bpy.utils.register_class(ES_ExportToTextblock)
 
+    bpy.types.Scene.export_scene_stats = bpy.props.PointerProperty(type = ExportProps)
+
 def unregister():
+    bpy.utils.unregister_class(ExportProps)
     bpy.utils.unregister_class(ES_ExportToTextblock)
+
+    del(bpy.types.Scene.export_scene_stats)
