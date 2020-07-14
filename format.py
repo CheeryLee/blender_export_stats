@@ -22,7 +22,7 @@ from .scene import *
 
 class FormatData():
     @staticmethod
-    def get_data() -> str:
+    def get_scene_data() -> str:
         text = ""
 
         scene_units = get_scene_units()
@@ -65,6 +65,12 @@ class FormatData():
         text += "Light probe count: " + str(light_probe_count) + "\n"
         text += "\n"
 
+        return text
+
+    @staticmethod
+    def get_objects_data() -> str:
+        text = ""
+        
         text += FormatData.__header__("Objects")
 
         for ob in bpy.context.scene.objects:
