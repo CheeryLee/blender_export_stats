@@ -18,8 +18,7 @@
 #
 
 import bpy
-from .object import *
-from .scene import *
+from .format import *
 
 class ES_ExportToTextblock(bpy.types.Operator):
     bl_label = "Export Scene Stats"
@@ -28,42 +27,7 @@ class ES_ExportToTextblock(bpy.types.Operator):
     
     def execute(self, context):
         text_block = bpy.data.texts.new('Scene stats')
-        text = ""
-
-        text += "=======\nScene stats\n=======\n\n"
-
-        scene_units = get_scene_units()
-        objects_count = get_objects_count()
-        mesh_count = get_objects_count_by_type('MESH')
-
-        text += "Units: " + scene_units + "\n"
-        text += "Objects count: " + str(objects_count) + "\n"
-        text += "Mesh count: " + str(mesh_count) + "\n"
-        text += "\n"
-
-        text += "=======\nObjects\n=======\n\n"
-
-        for ob in bpy.context.scene.objects:
-            if ob.type == 'MESH':
-                name = get_object_name(ob)
-                dim = get_object_dimensions(ob)
-                verts = get_vertices_count(ob)
-                verts_5_edges = get_vertices_with_links_count(ob, 5, False)
-                edges = get_edges_count(ob)
-                faces = get_faces_count(ob)
-                tris = get_triangles_count(ob)
-
-                text += "Name: " + str(name) + "\n"
-                text += "Dimensions: " + str(dim) + "\n"
-                text += "Vertices count: " + str(verts) + "\n"
-                text += "Vertices with more than 5 edges: " + str(verts_5_edges) + "\n"
-                text += "Edges: " + str(edges) + "\n"
-                text += "Faces: " + str(faces) + "\n"
-                text += "Triangles: " + str(tris) + "\n"
-                text += "\n"
-
-        text_block.write(text)
-
+        text_block.write(FormatData.get_data())
         self.report({ 'INFO' }, 'Scene stats has been exported to a new text block')
 
         return {'FINISHED'}

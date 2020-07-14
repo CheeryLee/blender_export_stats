@@ -35,6 +35,9 @@ def get_scene_units() -> str:
 def get_objects_count() -> int:
     return len(bpy.context.scene.objects)
 
+def get_collections_count() -> int:
+    return len(bpy.data.collections)
+
 def get_objects_count_by_type(ob_type: str) -> int:
     c = 0
 
